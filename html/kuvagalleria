@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="fi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kuvagalleria</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      background-color: #f2f2f2;
+    }
+    h1 {
+      text-align: center;
+      color: #333;
+    }
+    .gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    .gallery img {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease;
+    }
+    .gallery img:hover {
+      transform: scale(1.05);
+    }
+    .caption {
+      text-align: center;
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Meidän Kuvagalleria</h1>
+
+  <div class="gallery">
+    <div>
+      <img src="https://placekitten.com/400/300" alt="Kissa 1">
+      <div class="caption">Kissa leikkimässä</div>
+    </div>
+    <div>
+      <img src="https://placebear.com/400/300" alt="Karhu 1">
+      <div class="caption">Karhu metsässä</div>
+    </div>
+    <div>
+      <img src="https://picsum.photos/400/300?random=1" alt="Maisema 1">
+      <div class="caption">Satunnainen maisema</div>
+    </div>
+    <div>
+      <img src="https://picsum.photos/400/300?random=2" alt="Maisema 2">
+      <div class="caption">Vuoristomaisema</div>
+    </div>
+    <div>
+      <img src="https://placekitten.com/401/300" alt="Kissa 2">
+      <div class="caption">Torkkuva kissa</div>
+    </div>
+    <div>
+      <img src="https://placebear.com/401/300" alt="Karhu 2">
+      <div class="caption">Karhu unilla</div>
+    </div>
+  </div>
+
+</body>
+</html>
