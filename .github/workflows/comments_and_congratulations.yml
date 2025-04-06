@@ -53,26 +53,31 @@ jobs:
     steps:
       - name: Check the PR number of user
         id: check_prs
-        uses: actions/github-script@v6
+        uses: actions/github-script@v7
         with:
           script: |
-            const { data: pulls } = await github.rest.pulls.list({
+            const creator = context.payload.sender.login
+            const opts = github.rest.issues.listForRepo.endpoint.merge({
+              ...context.issue,
+              creator,
+              state: 'all'
+            })
+            const issues = await github.paginate(opts)
+
+            for (const issue of issues) {
+              if (issue.number === context.issue.number) {
+                continue
+              }
+                  if (issue.pull_request) {
+                return // Creator is already a contributor.
+              }
+            }
+
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              state: 'all',
-              per_page: 100
-            });
+              body: `**Welcome**, new contributor! 👋
 
-            const user = context.payload.pull_request.user.login;
-            const userPRs = pulls.filter(pr => pr.user.login === user);
-            core setOutput('count', userPRs.length);
-
-
-      - name: Congratulate user
-        uses: peter-evans/create-or-update-comment@v1
-        with:
-          issue-number: ${{ github.event.pull_request.number }}
-          body: |
-            🎉 Awesome job @${{ github.event.pull_request.user.login }}!  
-            This is your **{{ steps.check_prs.outputs.count }}** pull request — thanks for contributing to hamk_nds_lab2. 🙌
-
+                We look forward to reviewing your pull request shortly ✨`
+            })
