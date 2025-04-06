@@ -21,7 +21,7 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              labels: ["issue", "fix", "bug"]
+              labels: ["issue", "fix"]
             })
 
       - name: Comment on new issue
