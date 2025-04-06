@@ -1,0 +1,91 @@
+name: Label, comment & celebrate!
+
+on:
+  issues:
+    types: [opened, reopened, closed]
+  pull_request:
+    types: [opened]
+
+jobs:
+  label_issues:
+    if: github.event.action == 'opened' || github.event.action == 'reopened'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Add dynamic label based on issue content
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const title = context.payload.issue.title.toLowerCase();
+            const body = context.payload.issue.body?.toLowerCase() || '';
+            const labels = [];
+
+            if (title.includes('bug') || body.includes('bug')) {
+              labels.push('bug');
+            } else if (title.includes('feature') || title.includes('enhancement') || body.includes('feature')) {
+              labels.push('enhancement');
+            } else {
+              labels.push('needs-triage');
+            }
+
+            github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+              labels: labels
+            });
+
+      - name: Comment on new issue
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            Hi @${{ github.event.issue.user.login }} 👋  
+            Thanks for opening this issue! We'll take a look as soon as possible. 🫡
+
+  comment_on_closed_issue:
+    if: github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+    steps:
+      - name: Comment on closed issue
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ github.event.issue.number }}
+          body: |
+            ✅ The issue is now resolved.  
+            Thanks for reporting it!
+
+  congratulate_first_pr:
+    if: github.event.action == 'opened'
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Check if this is the user's first PR
+        id: check_prs
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const { data: pulls } = await github.rest.pulls.list({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'all',
+              per_page: 100
+            });
+
+            const user = context.payload.pull_request.user.login;
+            const userPRs = pulls.filter(pr => pr.user.login === user);
+            core.setOutput('isFirst', userPRs.length === 1);
+
+      - name: Congratulate user
+        if: steps.check_prs.outputs.isFirst == 'true'
+        uses: peter-evans/create-or-update-comment@v1
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body: |
+            🎉 Awesome job @${{ github.event.pull_request.user.login }}!  
+            This is your first pull request — thanks for contributing to hamk_nds_lab2. 🙌
+
