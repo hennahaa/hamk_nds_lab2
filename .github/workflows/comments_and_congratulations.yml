@@ -65,7 +65,7 @@ jobs:
 
             const user = context.payload.pull_request.user.login;
             const userPRs = pulls.filter(pr => pr.user.login === user);
-            core setOuput('count', userPRs.length);
+            core setOutput('count', userPRs.length);
 
 
       - name: Congratulate user
