@@ -68,6 +68,9 @@ jobs:
               if (issue.number === context.issue.number) {
                 continue
               }
+                  if (issue.pull_request) {
+                return // Creator is already a contributor.
+              }
             }
 
             await github.rest.issues.createComment({
