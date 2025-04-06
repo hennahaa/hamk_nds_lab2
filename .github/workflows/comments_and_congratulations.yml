@@ -8,7 +8,6 @@ on:
 
 jobs:
   label_issues:
-    if: github.event_name == 'issues' && (github.event.action == 'opened' || github.event.action == 'reopened')
     runs-on: ubuntu-latest
     permissions:
       issues: write
@@ -69,11 +68,11 @@ jobs:
             core.setOutput('isFirst', userPRs.length === 1);
 
       - name: Congratulate user
-        if: steps.check_prs.outputs.isFirst == 'true'
+        #if: steps.check_prs.outputs.isFirst == 'true'
         uses: peter-evans/create-or-update-comment@v1
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             🎉 Awesome job @${{ github.event.pull_request.user.login }}!  
-            This is your first pull request — thanks for contributing to hamk_nds_lab2. 🙌
+            This is your {{userPRs.length }}. pull request — thanks for contributing to hamk_nds_lab2. 🙌
 
