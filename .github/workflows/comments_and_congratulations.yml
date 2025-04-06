@@ -51,7 +51,7 @@ jobs:
     permissions:
       pull-requests: write
     steps:
-      - name: Check if this is the user's first PR
+      - name: Check the PR number of user
         id: check_prs
         uses: actions/github-script@v6
         with:
@@ -65,14 +65,13 @@ jobs:
 
             const user = context.payload.pull_request.user.login;
             const userPRs = pulls.filter(pr => pr.user.login === user);
-            core.setOutput('isFirst', userPRs.length === 1);
+
 
       - name: Congratulate user
-        #if: steps.check_prs.outputs.isFirst == 'true'
         uses: peter-evans/create-or-update-comment@v1
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             🎉 Awesome job @${{ github.event.pull_request.user.login }}!  
-            This is your {{userPRs.length }}. pull request — thanks for contributing to hamk_nds_lab2. 🙌
+            This is your {{ userPRs.length }}. pull request — thanks for contributing to hamk_nds_lab2. 🙌
 
