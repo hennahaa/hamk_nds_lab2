@@ -65,6 +65,7 @@ jobs:
 
             const user = context.payload.pull_request.user.login;
             const userPRs = pulls.filter(pr => pr.user.login === user);
+            core setOuput('count', userPRs.length);
 
 
       - name: Congratulate user
@@ -73,5 +74,5 @@ jobs:
           issue-number: ${{ github.event.pull_request.number }}
           body: |
             🎉 Awesome job @${{ github.event.pull_request.user.login }}!  
-            This is your {{ userPRs.length }}. pull request — thanks for contributing to hamk_nds_lab2. 🙌
+            This is your **{{ steps.check_prs.outputs.count }}** pull request — thanks for contributing to hamk_nds_lab2. 🙌
 
