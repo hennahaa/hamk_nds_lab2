@@ -13,28 +13,16 @@ jobs:
     permissions:
       issues: write
     steps:
-      - name: Add dynamic label based on issue content
+      - name: Attach label to issues
         uses: actions/github-script@v6
         with:
           script: |
-            const title = context.payload.issue.title.toLowerCase();
-            const body = context.payload.issue.body?.toLowerCase() || '';
-            const labels = [];
-
-            if (title.includes('bug') || body.includes('bug')) {
-              labels.push('bug');
-            } else if (title.includes('feature') || title.includes('enhancement') || body.includes('feature')) {
-              labels.push('enhancement');
-            } else {
-              labels.push('needs-triage');
-            }
-
             github.rest.issues.addLabels({
+              issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              issue_number: context.issue.number,
-              labels: labels
-            });
+              labels: ["issue", "fix", "bug"]
+            })
 
       - name: Comment on new issue
         uses: peter-evans/create-or-update-comment@v1
